@@ -12,6 +12,10 @@ public:
 	ofPoint currPoint;
 	ofColor wiggleColor;
 
+	vector< ofPolyline > polylines;
+
+
+
 	
 	
 

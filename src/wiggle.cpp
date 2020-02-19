@@ -10,4 +10,9 @@ wiggle::wiggle()
 	wiggleColor = ofColor(r, g, b);
 	
 	wigglePath.setColor(wiggleColor);
+
+	wigglePath.setFilled(false);
+	wigglePath.setStrokeWidth(2);
+
+	polylines.resize(100);
 }

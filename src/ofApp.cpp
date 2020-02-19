@@ -26,7 +26,7 @@ void ofApp::update()
 				for (int i = 0; i < lineSegments; i++)
 				{
 					ofVec2f v1(offset, 0);
-					ofVec2f newPoint = v1.rotate(ofRandom(-degreesOfRotation, degreesOfRotation));
+					ofVec2f newPoint = v1.rotate(ofRandom(-degreesOfRotation + rotModifier, degreesOfRotation + rotModifier));
 
 					wiggleGroup[currentLine].currPoint += newPoint;
 					wiggleGroup[currentLine].wigglePath.lineTo(wiggleGroup[currentLine].currPoint);
@@ -61,11 +61,17 @@ void ofApp::draw()
 
 	ofTranslate(0, randomStart);
 
+	ofPolyline poly;
+
 	for (int i = 0; i < amountOfNewLines; i++)
 	{
 		wiggleGroup[i].wigglePath.draw();
+		wiggleGroup[i].polylines[i].draw();
+
+		
 
 	}
+
 
 	ofPopMatrix();
 
@@ -98,13 +104,15 @@ void ofApp::keyPressed(int key)
 			for (int i = 0; i < lineSegments; i++)
 			{
 				ofVec2f v1(offset, 0);
-				ofVec2f newPoint = v1.rotate(ofRandom(-degreesOfRotation, degreesOfRotation));
+				ofVec2f newPoint = v1.rotate(ofRandom(-degreesOfRotation + rotModifier, degreesOfRotation + rotModifier));
+
 
 
 
 				wiggleGroup[currentLine].currPoint += newPoint;
 				wiggleGroup[currentLine].wigglePath.lineTo(wiggleGroup[currentLine].currPoint);
 
+				rotModifier *= 3;
 
 			}
 
@@ -150,7 +158,7 @@ void ofApp::setupApp()
 	lineSegments = 120;
 	degreesOfRotation = 90;
 
-	wiggleGroup.resize(100);
+	wiggleGroup.resize(1000);
 
 	for (int i = 0; i < amountOfNewLines; i++)
 	{
@@ -172,10 +180,12 @@ void ofApp::setupWiggles(int index)
 {
 	for (int i = 0; i < wiggleGroup.size(); i++)
 	{
-		wiggleGroup[index].currPoint.set(0, ofRandom(0, ofGetHeight()));
-		wiggleGroup[index].wigglePath.setStrokeWidth(10);
-		wiggleGroup[index].wigglePath.setFilled(true);
-		wiggleGroup[index].wigglePath.lineTo(wiggleGroup[index].currPoint);
+		wiggleGroup[i].currPoint.set(0, ofRandom(0, ofGetHeight()));
+		wiggleGroup[i].wigglePath.setStrokeWidth(10);
+		wiggleGroup[i].wigglePath.setFilled(true);
+		wiggleGroup[i].wigglePath.lineTo(wiggleGroup[index].currPoint);
+		wiggleGroup[i].polylines.resize(1000);
+		
 	}
 	
 	
@@ -184,7 +194,7 @@ void ofApp::setupWiggles(int index)
 void ofApp::resetWiggles()
 {
 	wiggleGroup.resize(0);
-	wiggleGroup.resize(100);
+	wiggleGroup.resize(1000);
 ;
 }
 
@@ -197,12 +207,12 @@ void ofApp::initGUI()
 	gui->setVisible(true);
 	gui->setWidth(ofGetWidth());
 
-	sl_iterations = gui->addSlider("Iterations", 1, 150);
+	sl_iterations = gui->addSlider("Iterations", 1, 1000);
 	sl_iterations->setEnabled(true);
 	sl_iterations->setVisible(true);
 	sl_iterations->setWidth(20, 20);
 
-	sl_numOfLines = gui->addSlider("Number of Lines", 1, 20);
+	sl_numOfLines = gui->addSlider("Number of Lines", 1, 100);
 	sl_numOfLines->setEnabled(true);
 	sl_numOfLines->setVisible(true);
 	sl_numOfLines->setWidth(20, 20);
@@ -211,6 +221,11 @@ void ofApp::initGUI()
 	sl_degrees->setEnabled(true);
 	sl_degrees->setVisible(true);
 	sl_degrees->setWidth(20, 20);
+
+	sl_rotModifier = gui->addSlider("Rotation Modifier", -30, 30);
+	sl_rotModifier->setEnabled(true);
+	sl_rotModifier->setVisible(true);
+	sl_rotModifier->setWidth(20, 20);
 	
 	tog_Automode = gui->addToggle("Auto", false);
 	tog_Automode->setEnabled(true);
@@ -233,6 +248,8 @@ void ofApp::initGUI()
 	tog_FillState->onToggleEvent(this, &ofApp::onToggleEvent);
 	tog_Automode->onToggleEvent(this, &ofApp::onToggleEvent);
 	sl_autoDelay->onSliderEvent(this, &ofApp::onSliderEvent);
+	sl_rotModifier->onSliderEvent(this, &ofApp::onSliderEvent);
+
 
 
 }
@@ -259,6 +276,11 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 	{
 		endTime = e.value;
 		ofResetElapsedTimeCounter();
+	}
+
+	if (e.target->is("Rotation Modifier"))
+	{
+		 degreesOfRotation += e.value;
 	}
 }
 

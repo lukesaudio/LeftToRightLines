@@ -33,6 +33,7 @@ public:
 	int offset, currentOffset;
 	int randomStart;
 	int degreesOfRotation;
+	int rotModifier;
 
 
 	bool newLines = false;
@@ -56,6 +57,7 @@ public:
 	ofxDatGuiSlider* sl_iterations;
 	ofxDatGuiSlider* sl_numOfLines;
 	ofxDatGuiSlider* sl_degrees;	
+	ofxDatGuiSlider* sl_rotModifier;
 
 	ofxDatGuiToggle* tog_Automode;
 	ofxDatGuiToggle* tog_FillState;
