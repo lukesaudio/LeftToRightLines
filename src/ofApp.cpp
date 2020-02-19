@@ -56,7 +56,16 @@ void ofApp::update()
 
 //--------------------------------------------------------------
 void ofApp::draw()
+
 {
+	camera.begin();
+
+	ofSetColor(ofColor::deepSkyBlue);
+	ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight() * 0.66);
+
+	ofSetColor(ofColor::lawnGreen);
+	ofDrawRectangle(0, ofGetHeight() * 0.66, ofGetWidth(), ofGetHeight() * 0.33);
+
 	ofPushMatrix();
 
 	ofTranslate(0, randomStart);
@@ -74,6 +83,8 @@ void ofApp::draw()
 
 
 	ofPopMatrix();
+
+	camera.end();
 
 
 	
@@ -93,7 +104,7 @@ void ofApp::keyPressed(int key)
 {
 
 	if (key == ' ') 	
-	{
+	{ 
 		resetWiggles();
 
 		for (int currentLine = 0; currentLine < amountOfNewLines; currentLine++)
@@ -103,14 +114,14 @@ void ofApp::keyPressed(int key)
 
 			for (int i = 0; i < lineSegments; i++)
 			{
-				ofVec2f v1(offset, 0);
-				ofVec2f newPoint = v1.rotate(ofRandom(-degreesOfRotation + rotModifier, degreesOfRotation + rotModifier));
+				ofVec3f v1(offset, 0);
+				ofVec3f newPoint = v1.rotate(ofRandom(-degreesOfRotation + rotModifier, degreesOfRotation + rotModifier), ofVec3f(0, 0, 1));
 
 
 
 
 				wiggleGroup[currentLine].currPoint += newPoint;
-				wiggleGroup[currentLine].wigglePath.lineTo(wiggleGroup[currentLine].currPoint);
+				wiggleGroup[currentLine].wigglePath.lineTo(wiggleGroup[currentLine].currPoint + ofVec3f(0, 0, 1));
 
 				rotModifier *= 3;
 
@@ -123,21 +134,22 @@ void ofApp::keyPressed(int key)
 		
 	}
 
+	if (key == 'h')
+	{
+		if (gui->getVisible()) gui->setVisible(false);		
+		else gui->setVisible(true);
+
+
+	}
 	if (key == 'x') 
 	{
-		gui->setVisible(false);
-		gui->setEnabled(false);
-		gui->collapse();
-		gui->setOpacity(0);
+		
 
 
 		screenCapture.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
 		screenCapture.save("LeftToRight.png");
 
-		gui->setOpacity(1);
-		gui->expand();
-		gui->setEnabled(true);
-		gui->setVisible(true);
+		
 
 	}
 
@@ -172,7 +184,13 @@ void ofApp::setupApp()
 
 
 	//Colours
-	ofBackground(ofColor::black);
+	//ofBackground(ofColor::black);
+
+	
+
+
+	
+
 }
 
 //---------------------------------------------------------------Initialise Wiggles

@@ -27,6 +27,8 @@ public:
 	//Variables
 	vector<wiggle> wiggleGroup;
 
+	
+
 	int lineSegmentLength;
 	int amountOfNewLines;
 	int lineSegments;
@@ -62,6 +64,8 @@ public:
 	ofxDatGuiToggle* tog_Automode;
 	ofxDatGuiToggle* tog_FillState;
 	ofxDatGuiSlider* sl_autoDelay;
+
+	ofEasyCam camera;
 
 
 	
